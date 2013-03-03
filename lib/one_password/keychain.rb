@@ -26,6 +26,10 @@ module OnePassword
       @profile = profile
     end
 
+    def password=(password)
+      current_profile.password = password
+    end
+
     protected
 
     def data_directory

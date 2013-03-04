@@ -9,3 +9,6 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.order = 'random'
 end
+
+require 'csv'
+PLAIN_PASSWORDS = CSV.read(SPEC_ROOT.join('fixtures/1Password.tsv'), col_sep: "\t", headers: :first_col)

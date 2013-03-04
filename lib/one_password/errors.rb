@@ -7,4 +7,7 @@ module OnePassword
       super "Undefined profile #{profile_name.inspect}"
     end
   end
+
+  class NoPassword < Error
+  end
 end

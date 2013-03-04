@@ -1,4 +1,5 @@
 require 'one_password/encryption'
+require 'active_support/core_ext'
 
 module OnePassword
   class Item
@@ -12,12 +13,18 @@ module OnePassword
     INDEX_TRASHED           = 7
 
     # @return [String]
-    attr_reader :uuid
-    attr_reader :type
-    attr_reader :title
-    attr_reader :domain
+    attr_accessor :uuid, :type, :title, :domain, :location_key, :open_contents, :key_id, :location, :encrypted,
+                  :created_at, :trashed, :type_name#,
+                  #:reminderq, :port, :notes_plain, :cash_limit, :html_name, :fields,
+                  #:expiry_mm, :expiry_yy, :member_name, :zip, :database_type, :html_action, :phone_toll_free,
+                  #:lastname, :password, :html_method, :html_id,
+                  #:renewal_date_yy, :renewal_date_mm, :renewal_date_dd, :cardholder, :credit_limit,
+                  #:birthdate_yy, :birthdate_mm, :birthdate_dd, :username, :company, :bank, :email, :ccnum,
+                  #:idisk_storage, :pin, :firstname, :path, :hostname, :website, :country, :interest, :database, :sex,
+                  #:server, :cvv, :address1, :address2, :cellphone_local, :city, :aim, :jobtitle, :state, :occupation,
+                  #:department, :busphone_local
     # @return [Time]
-    attr_reader :updated_at
+    attr_accessor :updated_at
 
     # @return [OnePassword::Profile]
     attr_reader :profile
@@ -25,13 +32,23 @@ module OnePassword
     # @param [Profile] profile
     # @param [Array] data
     def initialize(profile, data)
-      @profile    = profile
-      @uuid       = data[INDEX_UUID]
-      @type       = data[INDEX_TYPE]
-      @title      = data[INDEX_NAME]
-      @domain     = data[INDEX_URL]
-      @updated_at = Time.at(data[INDEX_DATE])
-      @trashed    = data[INDEX_TRASHED]
+      @profile        = profile
+      self.attributes = {
+        uuid:       data[INDEX_UUID],
+        type:       data[INDEX_TYPE],
+        title:      data[INDEX_NAME],
+        domain:     data[INDEX_URL],
+        updated_at: data[INDEX_DATE],
+        trashed:    data[INDEX_TRASHED]
+      }
+    end
+
+    def updated_at=(seconds)
+      @updated_at = Time.at(seconds)
+    end
+
+    def created_at=(seconds)
+      @created_at = Time.at(seconds)
     end
 
     def system?
@@ -103,17 +120,16 @@ module OnePassword
 
     def attributes=(attrs)
       attrs.each do |name, value|
-        send("#{name}=", value)
-      end
-    end
-
-    def method_missing(method, *args, &block)
-      if method =~ /=\Z/
-        instance_variable_set("@#{method[0..-2]}", args.first)
-      elsif args.empty? && instance_variable_defined?((ivar_name = :"@#{method}"))
-        instance_variable_get(ivar_name)
-      else
-        super
+        if value.present?
+          attribute = name.to_s.underscore
+          writer    = "#{attribute}="
+          if respond_to?(writer)
+            send(writer, value)
+          else
+            @attributes            ||= {}
+            @attributes[attribute] = value
+          end
+        end
       end
     end
   end

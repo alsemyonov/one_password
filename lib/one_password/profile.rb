@@ -11,7 +11,7 @@ module OnePassword
       @directory = Pathname(directory)
     end
 
-    attr_reader :name, :encryption_keys, :directory, :password
+    attr_reader :name, :encryption_keys, :directory
 
     def contents
       load_contents unless @contents
@@ -28,8 +28,18 @@ module OnePassword
       @encryption_keys
     end
 
+    def all_encryption_keys
+      load_encryption_keys unless @all_encryption_keys
+      @all_encryption_keys
+    end
+
     def encryption_keys_loaded?
       !!@encryption_keys
+    end
+
+    def password
+      raise NoPassword unless @password
+      @password
     end
 
     def password=(password)
@@ -80,6 +90,5 @@ module OnePassword
         result
       end
     end
-    attr_accessor :all_encryption_keys
   end
 end

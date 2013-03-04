@@ -26,5 +26,9 @@ module OnePassword
     def decrypted_key
       @decrypted_key || decrypt
     end
+
+    def valid?
+      Encryption.decrypt_using_key(validation, decrypted_key) == decrypted_key
+    end
   end
 end

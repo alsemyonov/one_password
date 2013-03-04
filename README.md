@@ -14,8 +14,9 @@ Agile Keychain.
 ### WIP
 
 * [Github](https://github.com/alsemyonov/one_password)
-* [![Build Status](https://travis-ci.org/alsemyonov/one_password.png?branch=master)](https://travis-ci.org/alsemyonov/one_password)
 * [Documentation](http://rubydoc.info/github/alsemyonov/one_password/frames)
+* [![Build Status](https://travis-ci.org/alsemyonov/one_password.png?branch=master)](https://travis-ci.org/alsemyonov/one_password)
+* [![Code Climate](https://codeclimate.com/github/alsemyonov/one_password.png)](https://codeclimate.com/github/alsemyonov/one_password)
 
 ## Installation
 

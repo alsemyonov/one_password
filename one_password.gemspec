@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = %w(al@semyonov.us)
   spec.description   = %q{File to operate with 1Password's Agile Keychain}
   spec.summary       = %q{1Password Agile Keychain support for Ruby}
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/alsemyonov/one_password'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)

@@ -1,6 +1,9 @@
 require 'one_password'
+require 'csv'
 
 SPEC_ROOT = Pathname.new(File.dirname(__FILE__))
+PLAIN_PASSWORDS = CSV.read(SPEC_ROOT.join('fixtures/1Password.tsv'), col_sep: "\t", headers: :first_col)
+MASTER_PASSWORD = '1Password'
 
 #noinspection RubyResolve
 RSpec.configure do |config|
@@ -10,5 +13,3 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
-require 'csv'
-PLAIN_PASSWORDS = CSV.read(SPEC_ROOT.join('fixtures/1Password.tsv'), col_sep: "\t", headers: :first_col)

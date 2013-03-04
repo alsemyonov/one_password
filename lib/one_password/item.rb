@@ -12,19 +12,19 @@ module OnePassword
     INDEX_PASSWORD_STRENGTH = 6
     INDEX_TRASHED           = 7
 
-    # @return [String]
-    attr_accessor :uuid, :type, :title, :domain, :location_key, :open_contents, :key_id, :location, :encrypted,
-                  :created_at, :trashed, :type_name#,
-                  #:reminderq, :port, :notes_plain, :cash_limit, :html_name, :fields,
-                  #:expiry_mm, :expiry_yy, :member_name, :zip, :database_type, :html_action, :phone_toll_free,
-                  #:lastname, :password, :html_method, :html_id,
-                  #:renewal_date_yy, :renewal_date_mm, :renewal_date_dd, :cardholder, :credit_limit,
-                  #:birthdate_yy, :birthdate_mm, :birthdate_dd, :username, :company, :bank, :email, :ccnum,
-                  #:idisk_storage, :pin, :firstname, :path, :hostname, :website, :country, :interest, :database, :sex,
-                  #:server, :cvv, :address1, :address2, :cellphone_local, :city, :aim, :jobtitle, :state, :occupation,
-                  #:department, :busphone_local
-    # @return [Time]
-    attr_accessor :updated_at
+                                                    # @return [String]
+    attr_accessor :uuid, :type, :title, :domain, :updated_at, :trashed, :security_level, :open_contents, :encrypted#,
+                  #:location_key, :open_contents, :key_id, :location, :encrypted,
+                  #:created_at, :trashed, :type_name #,
+                                                    #:reminderq, :port, :notes_plain, :cash_limit, :html_name, :fields,
+                                                    #:expiry_mm, :expiry_yy, :member_name, :zip, :database_type, :html_action, :phone_toll_free,
+                                                    #:lastname, :password, :html_method, :html_id,
+                                                    #:renewal_date_yy, :renewal_date_mm, :renewal_date_dd, :cardholder, :credit_limit,
+                                                    #:birthdate_yy, :birthdate_mm, :birthdate_dd, :username, :company, :bank, :email, :ccnum,
+                                                    #:idisk_storage, :pin, :firstname, :path, :hostname, :website, :country, :interest, :database, :sex,
+                                                    #:server, :cvv, :address1, :address2, :cellphone_local, :city, :aim, :jobtitle, :state, :occupation,
+                                                    #:department, :busphone_local
+                                                    # @return [Time]
 
     # @return [OnePassword::Profile]
     attr_reader :profile
@@ -87,7 +87,7 @@ module OnePassword
     end
 
     def security_level
-      @security_level || 'SL5'
+      open_contents.try(:[], 'securityLevel') || 'SL5'
     end
 
     def encryption_key
@@ -104,18 +104,38 @@ module OnePassword
     end
 
     def decrypt_data
-      plain_text = Encryption.decrypt_using_key(encrypted, encryption_key)
+      unless @decrypted
+        @decrypted      = true
+        plain_text = Encryption.decrypt_using_key(encrypted, encryption_key)
+        attrs = JSON.parse(plain_text)
+        self.attributes = attrs
+      end
+    end
 
-      require 'cgi'
+    def login_username
+      find_field_with_designation('username')
+    end
 
-      self.attributes = JSON.parse(plain_text)
+    def login_password
+      attributes['password'].presence || find_field_with_designation('password')
+    end
+
+    def find_field_with_designation(designation)
+      fields = attributes['fields']
+      field = fields.find do |field|
+        field['designation'] == designation
+      end if fields
+
+      field['value'] if field
     end
 
     def attributes
-      instance_variables.inject({}) do |result, ivar|
+      @attributes ||= {}
+      fields = instance_variables.inject({}) do |result, ivar|
         result[ivar] = instance_variable_get(ivar) unless ivar == :@profile
         result
       end
+      @attributes.merge(fields)
     end
 
     def attributes=(attrs)

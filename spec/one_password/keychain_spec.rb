@@ -26,7 +26,7 @@ describe OnePassword::Keychain do
 
     context '.password=' do
       before do
-        profile.password = '1Password'
+        profile.password = MASTER_PASSWORD
       end
 
       its('all_encryption_keys.size') { should == 2 }
@@ -56,10 +56,7 @@ describe OnePassword::Keychain do
 
           subject { item }
 
-          #it do
-          #  puts subject.title, subject.attributes
-          #end
-          #its(:password) { should == line['password'] }
+          its(:login_password) { should == line['password'] }
         end if line['title']
       end
 

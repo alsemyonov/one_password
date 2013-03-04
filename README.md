@@ -1,6 +1,21 @@
 # OnePassword
 
-TODO: Write a gem description
+Decryptor for 1Password Agile Keychain.
+It could decrypt passwords, stored in keychain, using your master password and PBKDF2-based encryption keys, stored in
+Agile Keychain.
+
+## Links
+
+### Released
+
+* [RubyGem](https://rubygems.org/gems/one_password)
+* [Documentation](http://rubydoc.info/gems/one_password/frames)
+
+### WIP
+
+* [Github](https://github.com/alsemyonov/one_password)
+* [![Build Status](https://travis-ci.org/alsemyonov/one_password.png?branch=master)](https://travis-ci.org/alsemyonov/one_password)
+* [Documentation](http://rubydoc.info/github/alsemyonov/one_password/frames)
 
 ## Installation
 
@@ -18,7 +33,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+
+keychain = OnePassword::Keychain.new('~/Dropbox/1Password.agilekeychain')
+
+keychain.password = '1Password'
+
+keychain.all.first[1].login_username
+keychain.all.first[1].login_password
+
+```
+
+## TODO
+
+* Different types of items
+* Encrypting and storing new passwords
+* Simple sinatr interface for showing and modifying keychain
 
 ## Contributing
 

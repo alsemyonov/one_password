@@ -7,7 +7,7 @@ require 'pathname'
 
 module OnePassword
   class Keychain
-    def initialize(directory = '~/Dropbox/1Password.agilekeychain')
+    def initialize(directory = '~/Dropbox/1Password/1Password.agilekeychain')
       @directory       = Pathname(File.expand_path(directory))
       @master_password = nil
       @profiles = profiles

@@ -9,7 +9,7 @@ describe OnePassword::Keychain do
   subject { keychain }
   it { should respond_to(:current_profile) }
   it { should respond_to(:password=) }
-  it { should have(1).profiles }
+  its('profiles.size') { should == 1 }
 
   context '.profile' do
     subject { profile }

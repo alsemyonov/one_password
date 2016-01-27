@@ -3,13 +3,14 @@
 require 'json'
 require 'one_password/profile'
 require 'one_password/errors'
+require 'pathname'
 
 module OnePassword
   class Keychain
-    def initialize(directory = '~/Dropbox/1Password.agilekeychain')
+    def initialize(directory = '~/Dropbox/1Password/1Password.agilekeychain')
       @directory       = Pathname(File.expand_path(directory))
       @master_password = nil
-      profiles
+      @profiles = profiles
     end
 
     # @return [Profile]
@@ -37,11 +38,14 @@ module OnePassword
     end
 
     def profiles
-      @profiles ||= Dir["#{data_directory}/*"].inject({}) do |result, dir|
+      profile_list = {}
+
+      Dir["#{data_directory}/*"].each do |dir|
         profile              = Profile.new(self, dir)
-        result[profile.name] = profile
-        result
+        profile_list[profile.name] = profile
       end
+
+      profile_list
     end
   end
 end

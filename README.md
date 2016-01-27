@@ -37,12 +37,17 @@ Or install it yourself as:
 
 ```ruby
 
-keychain = OnePassword::Keychain.new('~/Dropbox/1Password.agilekeychain')
+require 'one_password'
+
+keychain = OnePassword::Keychain.new("~/Dropbox/1Password/1Password.agilekeychain")
 
 keychain.password = '1Password'
 
-keychain.all.first[1].login_username
-keychain.all.first[1].login_password
+item = keychain.current_profile.all.first[1]
+item.decrypt_data
+
+item.login_username
+item.login_password
 
 ```
 

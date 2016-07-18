@@ -1,4 +1,4 @@
-# OnePassword
+# `one_password` Ruby gem
 
 Decryptor for 1Password Agile Keychain.
 It could decrypt passwords, stored in keychain, using your master password and PBKDF2-based encryption keys, stored in
